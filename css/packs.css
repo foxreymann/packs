@@ -1,0 +1,56 @@
+header {
+    width: 500px;
+    margin: 0 auto;
+}
+
+header h1 {
+    width: 400px;
+    float: left;
+}
+
+header div#sort {
+    width: 64px;
+    margin-top: 25px;
+    float: right;
+}
+
+main#sortable {
+    width: 500px;
+    margin: 0 auto;
+    clear: both;
+}
+
+ol#packs {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+ol#packs li.pack {
+    padding: 0;
+    margin: 0;
+    display: block;
+    border: 1px solid #bababa;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background: #cacaca;
+}
+
+ol#packs li.pack img {
+    border: 1px solid #aaaaaa;
+    border-radius: 6px;
+    margin: 15px;
+    width: 74px;
+    height: 74px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+ol#packs li.pack div.info {
+    display: inline-block;
+    margin: 15px;
+}
+
+ol#packs li.pack div.info span.name {
+    font-weight: bold;
+}

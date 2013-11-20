@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Packs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/packs.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    <script>
+        var data = {
+            "packs": [
+                {
+                    "name": "Pack One",
+                    "thumbnail": "http://static9.moo.com/images/homepage/thumbs-christmas/thumb-xmas-us.jpg",
+                    "paperStock": "luxe",
+                    "quantity": 50,
+                    "type": "business-card"
+                },
+                {
+                    "name": "Pack Two",
+                    "thumbnail": "http://static4.moo.com/images/heydaythumb.jpg",
+                    "paperStock": "standard",
+                    "quantity": 100,
+                    "type": "mini-card"
+                },
+                {
+                    "name": "Pack Three",
+                    "thumbnail": "http://static2.moo.com/images/luxe/hompeage-slideshow-thumb.jpg",
+                    "paperStock": "green",
+                    "quantity": 50,
+                    "type": "business-card",
+                    "extras": "rounded-corners"
+                },
+                {
+                    "name": "Pack Four",
+                    "thumbnail": "http://static9.moo.com/images/stickers/product-labels-slidethumb.jpg",
+                    "paperStock": "standard",
+                    "quantity": 200,
+                    "type": "rounded-sticker"
+                }
+            ]
+        };
+    </script>
+
+    <script type="text/template" id="packtpl">
+        <li class="pack">
+            <img src="<%= thumbnail %>" width="74" height="74">
+            
+            <div class="info">
+                <span class="name"><%= name %></span><br>
+                Paper Stock: <span class="paperStock"><%= paperStock %></span><br>
+                Card quantity: <span class="quantity"><%= quantity %></span><br>
+                Type: <span class="type"><%= type %></span><br>
+            </div>
+        </li>
+    </script>
+  </head>
+  <body>
+    <header>
+        <h1>Your Packs</h1>
+
+        <div class="btn-group" id="sort">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Sort <span class="caret"></span>
+          </button>
+          
+          <ul class="dropdown-menu" role="menu">
+            <li data-sort="name" data-sort-type="string"><a href="#">Name</a></li>
+            <li data-sort="paperStock" data-sort-type="string"><a href="#">Paper Stock</a></li>
+            <li data-sort="quantity" data-sort-type="number"><a href="#">Quantity</a></li>
+            <li data-sort="type" data-sort-type="string"><a href="#">Type</a></li>
+            <li class="divider"></li>
+            <li data-sort="none"><a href="#">None</a></li>
+          </ul>
+        </div>
+    </header>
+
+    <main id="sortable">
+        <ol id="packs">
+            
+        </ol>
+    </main>
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function Packs(data) {
+            this.data = data;
+        
+            this.template = _.template($('#packtpl').text());
+        }
+        
+        Packs.prototype.init = function() {
+            jQuery('#sort li a').on('click', this.changeSort.bind(this));
+            jQuery(this.buildPackUI.bind(this, this.data));
+            
+            return this;
+        };
+
+        Packs.prototype.buildPackUI = function(packData) {
+            var $ = jQuery.noConflict();
+        
+            $('#packs *').remove();
+        
+            packData.packs.forEach(function(pack) {
+                $('#packs').append(this.template(pack));
+            }.bind(this));
+        };
+
+        Packs.prototype.sortByFieldCallback = function(sortField, sortType, a, b) {
+            if (sortType === 'number') {
+                return parseInt(a[sortField], 10) - parseInt(b[sortField], 10);
+            } else if (sortType === 'string') {
+                return a[sortField].localeCompare(b[sortField]);
+            }
+        };
+
+        Packs.prototype.sortPacks = function(sortField, sortType) {
+            var newData = JSON.parse(JSON.stringify(this.data)); // Clone the data in a simple manner
+        
+            newData.packs.sort(this.sortByFieldCallback.bind(this, sortField, sortType));
+        
+            this.buildPackUI(newData);
+        };
+
+        Packs.prototype.changeSort = function(event) {
+            event.preventDefault();
+        
+            var sortField = jQuery(event.target).parent().data('sort');
+            var sortType = jQuery(event.target).parent().data('sort-type');
+        
+            if (sortField === 'none') {
+                this.buildPackUI(this.data);
+            } else {
+                this.sortPacks(sortField, sortType);
+            }
+        
+            return false;
+        };
+        
+        var packs = new Packs(data).init();
+    </script>
+  </body>
+</html>
